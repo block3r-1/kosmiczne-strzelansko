@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "Sprites.h"
 #include "GameLogic.h"
+#include "Sprites.h"
 
 struct game {
 	int score;

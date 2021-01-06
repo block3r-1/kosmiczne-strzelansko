@@ -1,5 +1,5 @@
-﻿#ifndef GRAPHICSENGINE_H_
-#define GRAPHICSENGINE_H_
+﻿#ifndef GRAPHICSENGINE_H
+#define GRAPHICSENGINE_H
 
 void fullscreen();
 
