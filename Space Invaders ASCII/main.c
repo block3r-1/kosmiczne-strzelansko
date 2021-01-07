@@ -128,7 +128,7 @@ int main() {
 		if (frameDelayAlien > TIME_ALIEN) {
 			updateAlienPosition(&alien, &alienAI, xAlien, yAlien, &xAlienOld, &yAlienOld, &alienState, &alienDir, width);
 			if (alienCurrent != NULL) {
-				updateAlienLaserPos(&alienCurrent, height);
+				updateAlienLaserPos(&alienCurrent, height, xShipOld, yShipOld, gameData);
 			}
 			frameDelayAlien = 0;
 		}

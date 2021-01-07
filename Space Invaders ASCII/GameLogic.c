@@ -120,7 +120,7 @@ void updateLaserPos(struct dynamicLaserEntity** current, int*** boulderMap, stru
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 }
 
-void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height) {
+void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height, int xShipOld, int yShipOld, struct game* gameData) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 	if (*alienCurrent != NULL) {
 		while ((*alienCurrent)->previous != NULL) { //przejscie na poczatek listy
@@ -146,6 +146,14 @@ void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height) {
 				}
 			}
 			printObject(laser, (*alienCurrent)->x, (*alienCurrent)->y + 1, &((*alienCurrent)->xOld), &((*alienCurrent)->yOld));
+			if (((*alienCurrent)->yOld == yShipOld && (*alienCurrent)->xOld == xShipOld) ||
+				((*alienCurrent)->yOld == yShipOld && (*alienCurrent)->xOld == xShipOld + 1) ||
+				((*alienCurrent)->yOld == yShipOld && (*alienCurrent)->xOld == xShipOld + 2)
+				)
+			{
+				rmElement(alienCurrent);
+				gameData->lives = gameData->lives - ALIEN_DAMAGE;
+			}
 			if ((*alienCurrent)->next != NULL) {
 				*alienCurrent = (*alienCurrent)->next;
 			}
