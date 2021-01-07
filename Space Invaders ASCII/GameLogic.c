@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <windows.h>
+#include <stdbool.h>
 
 #include "GameLogic.h"
 #include "Sprites.h"
@@ -187,5 +188,172 @@ void updateShipPos(int xShip, int yShip, int* xShipOld, int* yShipOld, struct dy
 	if (input == 5) {
 		//spacja
 		shootLaser(current, *xShipOld, *yShipOld);
+	}
+}
+
+void detectCollisions(int xShipOld, int yShipOld, int*** boulderMap, struct game* gameData) {
+	int xHitbox = xShipOld;
+	int yHitbox = yShipOld;
+
+	/* KOLIZJE Z GORY */
+
+	if ((*boulderMap)[yHitbox][xHitbox] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox][xHitbox] = 0;
+	}
+	if ((*boulderMap)[yHitbox][xHitbox + 1] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox][xHitbox + 1] = 0;
+	}
+	if ((*boulderMap)[yHitbox][xHitbox + 2] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox][xHitbox + 2] = 0;
+	}
+	if ((*boulderMap)[yHitbox][xHitbox + 3] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox][xHitbox + 3] = 0;
+	}
+	if ((*boulderMap)[yHitbox][xHitbox + 4] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox][xHitbox + 4] = 0;
+	}
+
+	/* KOLIZJE Z LEWEJ STRONY */
+
+	if ((*boulderMap)[yHitbox + 1][xHitbox] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox + 1][xHitbox] = 0;
+	}
+	if ((*boulderMap)[yHitbox + 2][xHitbox] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox + 2][xHitbox] = 0;
+	}
+
+	/* KOLIZJE Z PRAWEJ STRONY */
+
+	if ((*boulderMap)[yHitbox + 1][xHitbox + 4] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox + 1][xHitbox + 4] = 0;
+	}
+	if ((*boulderMap)[yHitbox + 2][xHitbox + 4] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox + 2][xHitbox + 4] = 0;
+	}
+
+	/* KOLIZJE Z DOLU */
+
+	if ((*boulderMap)[yHitbox + 2][xHitbox + 1] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox + 2][xHitbox + 1] = 0;
+	}
+	if ((*boulderMap)[yHitbox + 2][xHitbox + 2] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox + 2][xHitbox + 2] = 0;
+	}
+	if ((*boulderMap)[yHitbox + 2][xHitbox + 3] == 1) {
+		gameData->lives--;
+		(*boulderMap)[yHitbox + 2][xHitbox + 3] = 0;
+	}
+
+}
+
+void generateAlien(int* alien, int* alienAI) {
+	if ((rand() + 1) % ALIEN_CHANCE == 1) {
+		*alien = rand() % (2 + 1 - 1) + 1;
+		*alienAI = rand() % (2 + 1);
+	}
+}
+
+void updateAlienPosition(int* alien, int* alienAI, int xAlien, int yAlien, int* xAlienOld, int* yAlienOld, bool* alienState, int* alienDir, int width) {
+	switch (*alien) {
+	case 1:
+		clear(alienClear, *xAlienOld, *yAlienOld);
+		xAlien = *xAlienOld;
+		yAlien = *yAlienOld;
+		if (*alienState == false) {
+			printObject(alien1a, xAlien + *alienDir, yAlien, xAlienOld, yAlienOld);
+		}
+		else if (*alienState == true) {
+			printObject(alien1b, xAlien + *alienDir, yAlien, xAlienOld, yAlienOld);
+		}
+		*alienState = !(*alienState);
+		break;
+	case 2:
+		clear(alienClear, *xAlienOld, *yAlienOld);
+		xAlien = *xAlienOld;
+		yAlien = *yAlienOld;
+		if (*alienState == false) {
+			printObject(alien2a, xAlien + *alienDir, yAlien, xAlienOld, yAlienOld);
+		}
+		else if (*alienState == true) {
+			printObject(alien2b, xAlien + *alienDir, yAlien, xAlienOld, yAlienOld);
+		}
+		*alienState = !(*alienState);
+		break;
+	case 0:
+		return;
+		break;
+	}
+	if (*xAlienOld == width - 10) {
+		*alienDir = -(*alienDir);
+	}
+	if (*xAlienOld == 0) {
+		*alien = 0;
+	}
+}
+
+void generateBoulders(int*** boulderMap, int width, int height) {
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			//5 = 200 / procent
+			if ((rand() + 1) % BOULDER_DENSITY == 0) {
+				(*boulderMap)[i][j] = 0;
+			}
+			if ((rand() + 1) % BOULDER_DENSITY == 1) {
+				(*boulderMap)[i][j] = 1;
+			}
+		}
+	}
+}
+
+void printBoulders(int** boulderMap, int width, int height) {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			if (boulderMap[i][j] == 1) {
+				setCoordinates(j, i);
+				putchar('@');
+			}
+		}
+	}
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+}
+
+void updateBoulders(int*** boulderMap, int xShipOld, int yShipOld, int width, int height) {
+	/* WYCZYSZCZENIE */
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			if ((*boulderMap)[i][j] == 1) {
+				setCoordinates(j, i);
+				putchar(' ');
+			}
+		}
+	}
+	int* temp = NULL;
+
+	for (int i = height - 1; i > 0; i--) {
+		temp = (*boulderMap)[i - 1];
+		(*boulderMap)[i - 1] = (*boulderMap)[i];
+		(*boulderMap)[i] = temp;
+	}
+	/* WYGENEROWANIE NOWEJ LINII */
+	for (int j = 0; j < width; j++) {
+		//20 = 200 / procent
+		if ((rand() + 1) % BOULDER_DENSITY == 0) {
+			(*boulderMap)[0][j] = 0;
+		}
+		if ((rand() + 1) % BOULDER_DENSITY == 1) {
+			(*boulderMap)[0][j] = 1;
+		}
 	}
 }

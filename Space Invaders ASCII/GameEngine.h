@@ -1,5 +1,5 @@
-﻿#ifndef GRAPHICSENGINE_H
-#define GRAPHICSENGINE_H
+﻿#ifndef GAMEENGINE_H
+#define GAMEENGINE_H
 
 void fullscreen();
 
@@ -16,5 +16,14 @@ void printObject(const unsigned char* object, int x, int y, int* xOld, int* yOld
 void clear(const unsigned char* object, int x, int y);
 
 void initializeConsole();
+
+bool rmElement(struct dynamicLaserEntity** current);
+
+void gameTick(unsigned long int* timeElapsed, unsigned long int* lastTime);
+
+int getKeyboardInput();
+
+void gameStats(struct game* gameData);
+void finishGame(int width, int height);
 
 #endif

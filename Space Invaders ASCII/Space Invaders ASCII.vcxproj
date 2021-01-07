@@ -140,13 +140,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameLogic.c" />
-    <ClCompile Include="GraphicsEngine.c" />
-    <ClCompile Include="Input.c" />
+    <ClCompile Include="GameEngine.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="Sprites.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameLogic.h" />
-    <ClInclude Include="GraphicsEngine.h" />
+    <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Sprites.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
