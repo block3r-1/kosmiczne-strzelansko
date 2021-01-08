@@ -11,7 +11,7 @@
 #define TIME_BOULDER 700 //ms
 #define TIME_LASER 100
 #define TIME_ALIEN 100
-#define TIME_ALIEN_GENERATION 1500
+#define TIME_ALIEN_GENERATION 500
 #define TIME_ALIEN_LASER 100
 
 struct game {
@@ -89,6 +89,10 @@ int main() {
 		printf("Cos poszlo nie tak! Nie mozna odczytac wymiarow konsoli!");
 		exit(-1);
 	}
+	int temp1, temp2;
+	printObject(logo, (width - calcObjectWidth(logo)) / 2, height / 2, &temp1, &temp2);
+aaaaaaaa	Sleep(5000);
+	system("cls");
 	generateBoulders(&boulderMap, width, height);
 	printBoulders(boulderMap, width, height);
 	lastTime = GetTickCount64();

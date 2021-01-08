@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <windows.h>
 #include <stdbool.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
 #include "GameLogic.h"
 #include "Sprites.h"
@@ -33,6 +35,7 @@ void shootLaser(struct dynamicLaserEntity** current, int xShipOld, int yShipOld)
 			(*current)->yOld = (*current)->y;
 			(*current)->next = NULL;
 			(*current)->previous = NULL;
+			PlaySound(TEXT("laser.wav"), NULL, SND_ASYNC);
 		}
 	}
 	else {
@@ -46,6 +49,7 @@ void shootLaser(struct dynamicLaserEntity** current, int xShipOld, int yShipOld)
 			new->previous = *current;
 			new->next = NULL;
 			*current = new;
+			PlaySound(TEXT("laser.wav"), NULL, SND_ASYNC);
 		}
 	}
 }
@@ -269,6 +273,7 @@ void generateAlien(int* alien, int* alienAI) {
 	if ((rand() % 100) < ALIEN_CHANCE) {
 		*alien = rand() % (2 + 1 - 1) + 1;
 		*alienAI = rand() % (2 + 1);
+		PlaySound(TEXT("alien.wav"), NULL, SND_ASYNC);
 	}
 }
 
