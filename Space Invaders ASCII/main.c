@@ -91,7 +91,7 @@ int main() {
 	}
 	int temp1, temp2;
 	printObject(logo, (width - calcObjectWidth(logo)) / 2, height / 2, &temp1, &temp2);
-aaaaaaaa	Sleep(5000);
+	Sleep(5000);
 	system("cls");
 	generateBoulders(&boulderMap, width, height);
 	printBoulders(boulderMap, width, height);
