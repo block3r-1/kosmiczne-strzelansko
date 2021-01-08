@@ -266,7 +266,7 @@ void detectCollisions(int xShipOld, int yShipOld, int*** boulderMap, struct game
 }
 
 void generateAlien(int* alien, int* alienAI) {
-	if ((rand() + 1) % ALIEN_CHANCE == 1) {
+	if ((rand() % 100) < ALIEN_CHANCE) {
 		*alien = rand() % (2 + 1 - 1) + 1;
 		*alienAI = rand() % (2 + 1);
 	}
@@ -305,8 +305,10 @@ void updateAlienPosition(int* alien, int* alienAI, int xAlien, int yAlien, int* 
 	if (*xAlienOld == width - 10) {
 		*alienDir = -(*alienDir);
 	}
-	if (*xAlienOld == 0) {
+	if (*xAlienOld == 1 && *alienDir == -1) {
 		*alien = 0;
+		*alienDir = -(*alienDir);
+		clear(alienClear, *xAlienOld, *yAlienOld);
 	}
 }
 

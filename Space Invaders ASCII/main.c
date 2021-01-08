@@ -8,9 +8,11 @@
 #include "GameLogic.h"
 #include "Sprites.h"
 
-#define TIME_BOULDER 1200 //ms
-#define TIME_LASER 300
-#define TIME_ALIEN 300
+#define TIME_BOULDER 700 //ms
+#define TIME_LASER 100
+#define TIME_ALIEN 100
+#define TIME_ALIEN_GENERATION 1500
+#define TIME_ALIEN_LASER 100
 
 struct game {
 	int score;
@@ -37,6 +39,7 @@ int main() {
 	int frameDelayLaser = 0;
 	int frameDelayBoulders = 0;
 	int frameDelayAlien = 0;
+	int frameDelayAlienGeneration = 0;
 	int frameDelayAlienLaser = 0;
 
 	struct dynamicLaserEntity* current = NULL;
@@ -93,16 +96,22 @@ int main() {
 	printObject(ship, xShip, yShip, &xShipOld, &yShipOld);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 	while (quit == false) {
+		fflush(stdout);
 	// glowna petla gry
 		gameTick(&timeElapsed, &lastTime);
 		frameDelayLaser += timeElapsed;
 		frameDelayBoulders += timeElapsed;
 		frameDelayAlien += timeElapsed;
+		frameDelayAlienGeneration += timeElapsed;
+		frameDelayAlienLaser += timeElapsed;
 
 		updateShipPos(xShip, yShip, &xShipOld, &yShipOld, &current, boulderMap, gameData);
 		detectCollisions(xShipOld, yShipOld, &boulderMap, gameData);
 		if (alien == 0) {
-			generateAlien(&alien, &alienAI);
+			if (frameDelayAlienGeneration > TIME_ALIEN_GENERATION) {
+				generateAlien(&alien, &alienAI);
+				frameDelayAlienGeneration = 0;
+			}
 		}
 		gameStats(gameData);
 
@@ -121,14 +130,19 @@ int main() {
 			updateBoulders(&boulderMap, xShipOld, yShipOld, width, height);
 			printBoulders(boulderMap, width, height);
 			if (alien != 0) {
-				shootAlienLaser(&alienCurrent, xAlienOld, yAlienOld);
+				if ((rand() % 100) < ALIEN_LASER_CHANCE) {
+					shootAlienLaser(&alienCurrent, xAlienOld, yAlienOld);
+				}
 			}
 			frameDelayBoulders = 0;
 		}
 		if (frameDelayAlien > TIME_ALIEN) {
 			updateAlienPosition(&alien, &alienAI, xAlien, yAlien, &xAlienOld, &yAlienOld, &alienState, &alienDir, width);
 			if (alienCurrent != NULL) {
-				updateAlienLaserPos(&alienCurrent, height, xShipOld, yShipOld, gameData);
+				if (frameDelayAlienLaser > TIME_ALIEN_LASER) {
+					updateAlienLaserPos(&alienCurrent, height, xShipOld, yShipOld, gameData);
+					frameDelayAlienLaser = 0;
+				}
 			}
 			frameDelayAlien = 0;
 		}

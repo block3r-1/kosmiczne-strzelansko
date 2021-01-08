@@ -63,6 +63,8 @@ void getConsoleSize(int* width, int* height) {
 	COORD screenData = GetLargestConsoleWindowSize(GetStdHandle(STD_OUTPUT_HANDLE));
 	*width = screenData.X;
 	*height = screenData.Y;
+	//COORD consoleBufferSize = { *width, *height };
+	//SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), consoleBufferSize);
 	//*x = (width - size) / 2;
 	//*y = height / 2;
 }

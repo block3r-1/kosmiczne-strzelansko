@@ -1,9 +1,10 @@
 #ifndef GAMELOGIC_H
 #define GAMELOGIC_H
 
-#define BOULDER_DENSITY 200 //im wieksza wartosc tym mniej
-#define ALIEN_CHANCE 100
+#define BOULDER_DENSITY 500 //im wieksza wartosc tym mniej
+#define ALIEN_CHANCE 50
 #define ALIEN_DAMAGE 10
+#define ALIEN_LASER_CHANCE 85
 
 void shootLaser(struct dynamicLaserEntity** current, int xShipOld, int yShipOld);
 void shootAlienLaser(struct dynamicLaserEntity** alienCurrent, int xShipOld, int yShipOld);
