@@ -6,20 +6,20 @@
 #define ALIEN_DAMAGE 10
 #define ALIEN_LASER_CHANCE 85
 
-void shootLaser(struct dynamicLaserEntity** current, int xShipOld, int yShipOld);
-void shootAlienLaser(struct dynamicLaserEntity** alienCurrent, int xShipOld, int yShipOld);
+void shootLaser(struct dynamicLaserEntity** current, int xShip, int yShip);
+void shootAlienLaser(struct dynamicLaserEntity** alienCurrent, struct alien alien);
 
-void updateShipPos(int xShip, int yShip, int* xShipOld, int* yShipOld, struct dynamicLaserEntity** current, int** boulderMap, struct game* gameData);
+void updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, struct game* gameData);
 void updateLaserPos(struct dynamicLaserEntity** current, int*** boulderMap, struct game* gameData);
-void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height, int xShipOld, int yShipOld, struct game* gameData);
+void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height, struct ship spaceship, struct game* gameData);
 
-void detectCollisions(int xShipOld, int yShipOld, int*** boulderMap, struct game* gameData);
+void detectCollisions(struct ship spaceship, int*** boulderMap, struct game* gameData);
 
-void generateAlien(int* alien, int* alienAI);
-void updateAlienPosition(int* alien, int* alienAI, int xAlien, int yAlien, int* xAlienOld, int* yAlienOld, bool* alienState, int* alienDir, int width);
+void generateAlien(struct alien* alien);
+void updateAlienPosition(struct alien* alien, int* alienDir, int width);
 
 void generateBoulders(int*** boulderMap, int width, int height);
 void printBoulders(int** boulderMap, int width, int height);
-void updateBoulders(int*** boulderMap, int xShipOld, int yShipOld, int width, int height);
+void updateBoulders(int*** boulderMap, int width, int height);
 
 #endif

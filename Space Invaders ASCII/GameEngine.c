@@ -70,13 +70,13 @@ void getConsoleSize(int* width, int* height) {
 }
 
 void printObject(const unsigned char* object, int x, int y, int* xOld, int* yOld) {
+	int* temp = xOld;
 
 	int i = 0;
 	*xOld = x;
 	*yOld = y;
 	setCoordinates(x, y);
 	while (object[i] != '\0') {
-		char r = object[i];
 		putchar(object[i]);
 		fflush(stdout);
 		if (object[i] == '\n') {
