@@ -31,8 +31,6 @@ struct alien {
 struct ship {
 	int x;
 	int y;
-	int xOld;
-	int yOld;
 };
 
 int main() {
@@ -57,13 +55,11 @@ int main() {
 	alien.x = 0;
 	alien.y = 20;
 	alien.xOld = 0;
-	alien.yOld = 0;
+	alien.yOld = 20;
 	alien.AI = 0;
 
 	spaceship.x = 0;
 	spaceship.y = 0;
-	spaceship.xOld = 0;
-	spaceship.yOld = 0;
 
 	struct game* gameData = malloc(sizeof(struct game));
 	if (gameData != NULL) {
@@ -84,8 +80,6 @@ int main() {
 
 	spaceship.x = width / 2;
 	spaceship.y = height - 5;
-	spaceship.xOld = spaceship.x;
-	spaceship.yOld = spaceship.y;
 
 	int** boulderMap = NULL;
 	if (height > 0 && width > 0) {

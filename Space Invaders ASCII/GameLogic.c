@@ -37,8 +37,6 @@ struct alien {
 struct ship {
 	int x;
 	int y;
-	int xOld;
-	int yOld;
 };
 
 void shootLaser(struct dynamicLaserEntity** current, int xShip, int yShip) {
@@ -166,9 +164,9 @@ void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height, s
 				}
 			}
 			printObject(laser, (*alienCurrent)->x, (*alienCurrent)->y + 1, &((*alienCurrent)->xOld), &((*alienCurrent)->yOld));
-			if (((*alienCurrent)->yOld == spaceship.yOld && (*alienCurrent)->xOld == spaceship.xOld) ||
-				((*alienCurrent)->yOld == spaceship.yOld && (*alienCurrent)->xOld == spaceship.xOld + 1) ||
-				((*alienCurrent)->yOld == spaceship.yOld && (*alienCurrent)->xOld == spaceship.xOld + 2)
+			if (((*alienCurrent)->yOld == spaceship.y && (*alienCurrent)->xOld == spaceship.x) ||
+				((*alienCurrent)->yOld == spaceship.y && (*alienCurrent)->xOld == spaceship.x + 1) ||
+				((*alienCurrent)->yOld == spaceship.y && (*alienCurrent)->xOld == spaceship.x + 2)
 				)
 			{
 				rmElement(alienCurrent);
@@ -190,15 +188,13 @@ void updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, 
 	int input = getKeyboardInput();
 	if (input == 1) {
 		clear(shipClear, spaceship->x, spaceship->y);
-		spaceship->x = spaceship->xOld;
-		spaceship->y = spaceship->yOld;
-		printObject(ship, (spaceship->x) - 1, spaceship->y, &(spaceship->x), &(spaceship->y));
+		spaceship->x = spaceship->x - 1;
+		printObject(ship, spaceship->x, spaceship->y, &(spaceship->x), &(spaceship->y));
 	}
 	if (input == 2) {
-		clear(shipClear, &(spaceship->x), &(spaceship->y));
-		spaceship->x = spaceship->xOld;
-		spaceship->y = spaceship->yOld;
-		printObject(ship, (spaceship->x) + 1, spaceship->y, &(spaceship->x), &(spaceship->y));
+		clear(shipClear, spaceship->x, spaceship->y);
+		spaceship->x = spaceship->x + 1;
+		printObject(ship, spaceship->x, spaceship->y, &(spaceship->x), &(spaceship->y));
 	}
 	/*if (input == 3) {
 		clear(shipClear, *xShipOld, *yShipOld);
@@ -215,13 +211,13 @@ void updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 	if (input == 5) {
 		//spacja
-		shootLaser(current, spaceship->xOld, spaceship->yOld);
+		shootLaser(current, spaceship->x, spaceship->y);
 	}
 }
 
 void detectCollisions(struct ship spaceship, int*** boulderMap, struct game* gameData) {
-	int xHitbox = spaceship.xOld;
-	int yHitbox = spaceship.yOld;
+	int xHitbox = spaceship.x;
+	int yHitbox = spaceship.y;
 
 	/* KOLIZJE Z GORY */
 
