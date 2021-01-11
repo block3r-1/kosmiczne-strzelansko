@@ -103,16 +103,20 @@ int main() {
 		printf("Cos poszlo nie tak! Nie mozna odczytac wymiarow konsoli!");
 		exit(-1);
 	}
-	int temp1, temp2;
-	//printObject(logo, (width - calcObjectWidth(logo)) / 2, height / 2, &temp1, &temp2);
-	//Sleep(5000);
-	//system("cls");
+
+	printObject(logo, (width - calcObjectWidth(logo)) / 2, height / 2);
+	Sleep(5000);
+	system("cls");
+
 	generateBoulders(&boulderMap, width, height);
 	printBoulders(boulderMap, width, height);
+
 	lastTime = GetTickCount64();
+
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
-	printObject(ship, spaceship.x, spaceship.y, &(spaceship.x), &(spaceship.y));
+	printObject(ship, spaceship.x, spaceship.y);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+
 	while (quit == false) {
 		fflush(stdout);
 	// glowna petla gry

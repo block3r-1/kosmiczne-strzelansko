@@ -1,7 +1,7 @@
 #ifndef GAMELOGIC_H
 #define GAMELOGIC_H
 
-#define BOULDER_DENSITY 500 //im wieksza wartosc tym mniej
+#define BOULDER_DENSITY 1000 //im wieksza wartosc tym mniej
 #define ALIEN_CHANCE 90
 #define ALIEN_DAMAGE 10
 #define ALIEN_LASER_CHANCE 8

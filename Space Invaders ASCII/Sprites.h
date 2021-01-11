@@ -3,14 +3,6 @@
 
 extern const unsigned char logo[];
 extern const unsigned char death[];
-/*const unsigned char* logo =
-"█  █  ███   ███  █   █ ███  ███ █████ █   █ ████      ███  ██████ ████  █████ ████ █     ██  █   █  ███  █  █  ███\n"
-"█ █  █   █ █     ██ ██  █  █       █  ██  █ █        █       ██   █   █    █  █    █    █  █ ██  █ █     █ █  █   █\n"
-"██   █   █  ███  █ █ █  █  █      █   █ █ █ ███       ███    ██   ████    █   ███  █    ████ █ █ █  ███  ██   █   █\n"
-"█ █  █   █     █ █   █  █  █     █    █  ██ █            █   ██   █ █    █    █    █    █  █ █  ██     █ █ █  █   █\n"
-"█  █  ███  ████  █   █ ███  ███ █████ █   █ ████     ████    ██   █  ██ █████ ████ ████ █  █ █   █ ████  █  █  ███\n\t";
-*/
-
 extern const unsigned char ship[];
 extern const unsigned char shipClear[];
 extern const unsigned char laser[];
