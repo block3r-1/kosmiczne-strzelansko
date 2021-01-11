@@ -23,8 +23,6 @@ struct alien {
 	int presence;
 	int x;
 	int y;
-	int xOld;
-	int yOld;
 	int AI;
 };
 
@@ -54,8 +52,6 @@ int main() {
 	alien.presence = 0;
 	alien.x = 0;
 	alien.y = 20;
-	alien.xOld = 0;
-	alien.yOld = 20;
 	alien.AI = 0;
 
 	spaceship.x = 0;

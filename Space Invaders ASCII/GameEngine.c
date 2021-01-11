@@ -13,8 +13,6 @@ struct game {
 struct pos {
 	int x;
 	int y;
-	int xOld;
-	int yOld;
 };
 
 struct dynamicLaserEntity {
@@ -69,12 +67,8 @@ void getConsoleSize(int* width, int* height) {
 	//*y = height / 2;
 }
 
-void printObject(const unsigned char* object, int x, int y, int* xOld, int* yOld) {
-	int* temp = xOld;
-
+void printObject(const unsigned char* object, int x, int y) {
 	int i = 0;
-	*xOld = x;
-	*yOld = y;
 	setCoordinates(x, y);
 	while (object[i] != '\0') {
 		putchar(object[i]);

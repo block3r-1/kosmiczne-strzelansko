@@ -11,7 +11,7 @@ int calcObjectWidth(const unsigned char* object);
 
 void getConsoleSize(int* width, int* height);
 
-void printObject(const unsigned char* object, int x, int y, int* xOld, int* yOld);
+void printObject(const unsigned char* object, int x, int y);
 
 void clear(const unsigned char* object, int x, int y);
 

@@ -15,8 +15,6 @@ struct game {
 struct pos {
 	int x;
 	int y;
-	int xOld;
-	int yOld;
 };
 
 struct dynamicLaserEntity {
@@ -45,8 +43,6 @@ void shootLaser(struct dynamicLaserEntity** current, int xShip, int yShip) {
 		if (*current != NULL) {
 			(*current)->x = xShip + 2;
 			(*current)->y = yShip - 1;
-			(*current)->xOld = (*current)->x;
-			(*current)->yOld = (*current)->y;
 			(*current)->next = NULL;
 			(*current)->previous = NULL;
 			PlaySound(TEXT("laser.wav"), NULL, SND_ASYNC);
@@ -57,8 +53,6 @@ void shootLaser(struct dynamicLaserEntity** current, int xShip, int yShip) {
 		if (new != NULL) {
 			new->x = xShip + 2;
 			new->y = yShip - 1;
-			new->xOld = new->x;
-			new->yOld = new->y;
 			(*current)->next = new;
 			new->previous = *current;
 			new->next = NULL;
@@ -74,8 +68,6 @@ void shootAlienLaser(struct dynamicLaserEntity** alienCurrent, struct alien alie
 		if (*alienCurrent != NULL) {
 			(*alienCurrent)->x = alien.x + 2;
 			(*alienCurrent)->y = alien.y + 2;
-			(*alienCurrent)->xOld = (*alienCurrent)->x;
-			(*alienCurrent)->yOld = (*alienCurrent)->y;
 			(*alienCurrent)->next = NULL;
 			(*alienCurrent)->previous = NULL;
 		}
@@ -85,8 +77,6 @@ void shootAlienLaser(struct dynamicLaserEntity** alienCurrent, struct alien alie
 		if (new != NULL) {
 			new->x = alien.x + 2;
 			new->y = alien.y + 2;
-			new->xOld = new->x;
-			new->yOld = new->y;
 			(*alienCurrent)->next = new;
 			new->previous = *alienCurrent;
 			new->next = NULL;
@@ -103,13 +93,11 @@ void updateLaserPos(struct dynamicLaserEntity** current, int*** boulderMap, stru
 		}
 		while (1) {
 			if (*current == NULL) break;
-			clear(laserClear, (*current)->xOld, (*current)->yOld);
-			(*current)->x = (*current)->xOld;
-			(*current)->y = (*current)->yOld;
-			//setCoordinates((*current)->x, (*current)->y - 1);
+			clear(laserClear, (*current)->x, (*current)->y);
+			(*current)->y = (*current)->y - 1;
 			fflush(stdout);
 
-			if ((*current)->yOld < 2) {
+			if ((*current)->y < 2) {
 				if ((*current)->previous == NULL && (*current)->next == NULL) {
 					free(*current);
 					*current = NULL;
@@ -120,13 +108,14 @@ void updateLaserPos(struct dynamicLaserEntity** current, int*** boulderMap, stru
 					//usun element ze srodka listy
 				}
 			}
-			if ((*boulderMap)[(*current)->yOld][(*current)->xOld] == 1 || (*boulderMap)[(*current)->yOld][(*current)->xOld - 1] == 1 || (*boulderMap)[(*current)->yOld + 1][(*current)->xOld] == 1) {
-				(*boulderMap)[(*current)->yOld][(*current)->xOld] = 0;
+			if ((*boulderMap)[(*current)->y][(*current)->x] == 1) {
+				// || (*boulderMap)[(*current)->y][(*current)->x - 1] == 1 || (*boulderMap)[(*current)->y + 1][(*current)->x] == 1
+				(*boulderMap)[(*current)->y][(*current)->x] = 0;
 				rmElement(current);
 				gameData->score += 25;
 				if (*current == NULL) break;
 			}
-			printObject(laser, (*current)->x, (*current)->y - 1, &((*current)->xOld), &((*current)->yOld));
+			printObject(laser, (*current)->x, (*current)->y);
 			if ((*current)->next != NULL) {
 				*current = (*current)->next;
 			}
@@ -146,13 +135,10 @@ void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height, s
 		}
 		while (1) {
 			if (*alienCurrent == NULL) break;
-			clear(laserClear, (*alienCurrent)->xOld, (*alienCurrent)->yOld);
-			(*alienCurrent)->x = (*alienCurrent)->xOld;
-			(*alienCurrent)->y = (*alienCurrent)->yOld;
-			//setCoordinates((*alienCurrent)->x, (*alienCurrent)->y - 1);
+			clear(laserClear, (*alienCurrent)->x, (*alienCurrent)->y);
+			(*alienCurrent)->y = (*alienCurrent)->y + 1;
 			fflush(stdout);
-
-			if ((*alienCurrent)->yOld > height - 2) {
+			if ((*alienCurrent)->y > height - 2) {
 				if ((*alienCurrent)->previous == NULL && (*alienCurrent)->next == NULL) {
 					free(*alienCurrent);
 					*alienCurrent = NULL;
@@ -163,10 +149,10 @@ void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height, s
 					//usun element ze srodka listy
 				}
 			}
-			printObject(laser, (*alienCurrent)->x, (*alienCurrent)->y + 1, &((*alienCurrent)->xOld), &((*alienCurrent)->yOld));
-			if (((*alienCurrent)->yOld == spaceship.y && (*alienCurrent)->xOld == spaceship.x) ||
-				((*alienCurrent)->yOld == spaceship.y && (*alienCurrent)->xOld == spaceship.x + 1) ||
-				((*alienCurrent)->yOld == spaceship.y && (*alienCurrent)->xOld == spaceship.x + 2)
+			printObject(laser, (*alienCurrent)->x, (*alienCurrent)->y);
+			if (((*alienCurrent)->y == spaceship.y && (*alienCurrent)->x == spaceship.x) ||
+				((*alienCurrent)->y == spaceship.y && (*alienCurrent)->x == spaceship.x + 1) ||
+				((*alienCurrent)->y == spaceship.y && (*alienCurrent)->x == spaceship.x + 2)
 				)
 			{
 				rmElement(alienCurrent);
@@ -189,12 +175,12 @@ void updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, 
 	if (input == 1) {
 		clear(shipClear, spaceship->x, spaceship->y);
 		spaceship->x = spaceship->x - 1;
-		printObject(ship, spaceship->x, spaceship->y, &(spaceship->x), &(spaceship->y));
+		printObject(ship, spaceship->x, spaceship->y);
 	}
 	if (input == 2) {
 		clear(shipClear, spaceship->x, spaceship->y);
 		spaceship->x = spaceship->x + 1;
-		printObject(ship, spaceship->x, spaceship->y, &(spaceship->x), &(spaceship->y));
+		printObject(ship, spaceship->x, spaceship->y);
 	}
 	/*if (input == 3) {
 		clear(shipClear, *xShipOld, *yShipOld);
@@ -283,7 +269,7 @@ void detectCollisions(struct ship spaceship, int*** boulderMap, struct game* gam
 
 void generateAlien(struct alien* alien) {
 	if ((rand() % 100) < ALIEN_CHANCE) {
-		alien->presence = rand() % (2 + 1 - 1) + 1;
+		alien->presence = 1;//rand() % (2 + 1 - 1) + 1;
 		alien->AI = rand() % (2 + 1);
 		PlaySound(TEXT("alien.wav"), NULL, SND_ASYNC);
 	}
@@ -293,26 +279,28 @@ void updateAlienPosition(struct alien* alien, int* alienDir, int width) {
 	static bool alienState = false;
 	switch (alien->presence) {
 	case 1:
-		clear(alienClear, alien->xOld, alien->yOld);
-		alien->x = alien->xOld;
-		alien->y = alien->yOld;
+		clear(alienClear, alien->x, alien->y);
+		//alien->x = alien->xOld;
+		//alien->y = alien->yOld;
+		alien->x = alien->x + *alienDir;
 		if (alienState == false) {
-			printObject(alien1a, alien->x + *alienDir, alien->y, &(alien->xOld), &(alien->yOld));
+			printObject(alien1a, alien->x, alien->y);
 		}
 		else if (alienState == true) {
-			printObject(alien1b, alien->x + *alienDir, alien->y, &(alien->xOld), &(alien->yOld));
+			printObject(alien1b, alien->x, alien->y);
 		}
-		alienState = !(alienState);
+		alienState = !alienState;
 		break;
 	case 2:
-		clear(alienClear, alien->xOld, alien->yOld);
-		alien->x = alien->xOld;
-		alien->y = alien->yOld;
+		clear(alienClear, alien->x, alien->y);
+		//alien->x = alien->xOld;
+		//alien->y = alien->yOld;
+		alien->x = alien->x + *alienDir;
 		if (alienState == false) {
-			printObject(alien2a, alien->x + *alienDir, alien->y, &(alien->xOld), &(alien->yOld));
+			printObject(alien2a, alien->x, alien->y);
 		}
 		else if (alienState == true) {
-			printObject(alien2b, alien->x + *alienDir, alien->y, &(alien->xOld), &(alien->yOld));
+			printObject(alien2b, alien->x, alien->y);
 		}
 		alienState = !alienState;
 		break;
@@ -320,13 +308,13 @@ void updateAlienPosition(struct alien* alien, int* alienDir, int width) {
 		return;
 		break;
 	}
-	if (alien->xOld == width - 10) {
+	if (alien->x == width - 10) {
 		*alienDir = -(*alienDir);
 	}
-	if (alien->xOld == 1 && *alienDir == -1) {
+	if (alien->x == 1 && *alienDir == -1) {
 		alien->presence = 0;
 		*alienDir = -(*alienDir);
-		clear(alienClear, alien->xOld, alien->yOld);
+		clear(alienClear, alien->x, alien->y);
 	}
 }
 
