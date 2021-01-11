@@ -8,10 +8,10 @@
 #include "GameLogic.h"
 #include "Sprites.h"
 
-#define TIME_BOULDER 700 //ms
+#define TIME_BOULDER 750 //ms
 #define TIME_LASER 100
 #define TIME_ALIEN 100
-#define TIME_ALIEN_GENERATION 500
+#define TIME_ALIEN_GENERATION 1000
 #define TIME_ALIEN_LASER 100
 
 struct game {
@@ -24,6 +24,8 @@ struct alien {
 	int x;
 	int y;
 	int AI;
+	int type;
+	int dir;
 };
 
 struct ship {
@@ -136,24 +138,28 @@ int main() {
 			quit = true;
 		}
 
-		if(current != NULL) {
+		if (frameDelayBoulders > TIME_BOULDER) {
+			updateBoulders(&boulderMap, width, height);
+			printBoulders(boulderMap, width, height);
+			frameDelayBoulders = 0;
+		}
+
+		if (current != NULL) {
 			if (frameDelayLaser > TIME_LASER) {
 				updateLaserPos(&current, &boulderMap, gameData);
 				frameDelayLaser = 0;
 			}
 		}
-		if (frameDelayBoulders > TIME_BOULDER) {
-			updateBoulders(&boulderMap, width, height);
-			printBoulders(boulderMap, width, height);
+
+		if (frameDelayAlien > TIME_ALIEN) {
+			updateAlienPosition(&alien, &alienDir, width);
+
 			if (alien.presence == 1) {
 				if ((rand() % 100) < ALIEN_LASER_CHANCE) {
 					shootAlienLaser(&alienCurrent, alien);
 				}
 			}
-			frameDelayBoulders = 0;
-		}
-		if (frameDelayAlien > TIME_ALIEN) {
-			updateAlienPosition(&alien, &alienDir, width);
+
 			if (alienCurrent != NULL) {
 				if (frameDelayAlienLaser > TIME_ALIEN_LASER) {
 					updateAlienLaserPos(&alienCurrent, height, spaceship, gameData);

@@ -27,9 +27,9 @@ struct alien {
 	int presence;
 	int x;
 	int y;
-	int xOld;
-	int yOld;
 	int AI;
+	int type;
+	int dir;
 };
 
 struct ship {
@@ -94,7 +94,14 @@ void updateLaserPos(struct dynamicLaserEntity** current, int*** boulderMap, stru
 		while (1) {
 			if (*current == NULL) break;
 			clear(laserClear, (*current)->x, (*current)->y);
-			(*current)->y = (*current)->y - 1;
+
+			if ((*boulderMap)[(*current)->y][(*current)->x] == 1 || (*boulderMap)[(*current)->y + 1][(*current)->x] == 1) {
+				(*boulderMap)[(*current)->y][(*current)->x] = 0;
+				(*boulderMap)[(*current)->y - 1][(*current)->x] = 0;
+				rmElement(current);
+				gameData->score += 25;
+				break;
+			}
 			fflush(stdout);
 
 			if ((*current)->y < 2) {
@@ -105,16 +112,11 @@ void updateLaserPos(struct dynamicLaserEntity** current, int*** boulderMap, stru
 				}
 				else {
 					rmElement(current);
+					break;
 					//usun element ze srodka listy
 				}
 			}
-			if ((*boulderMap)[(*current)->y][(*current)->x] == 1) {
-				// || (*boulderMap)[(*current)->y][(*current)->x - 1] == 1 || (*boulderMap)[(*current)->y + 1][(*current)->x] == 1
-				(*boulderMap)[(*current)->y][(*current)->x] = 0;
-				rmElement(current);
-				gameData->score += 25;
-				if (*current == NULL) break;
-			}
+			(*current)->y = (*current)->y - 1;
 			printObject(laser, (*current)->x, (*current)->y);
 			if ((*current)->next != NULL) {
 				*current = (*current)->next;
@@ -269,7 +271,8 @@ void detectCollisions(struct ship spaceship, int*** boulderMap, struct game* gam
 
 void generateAlien(struct alien* alien) {
 	if ((rand() % 100) < ALIEN_CHANCE) {
-		alien->presence = 1;//rand() % (2 + 1 - 1) + 1;
+		alien->presence = 1;
+		alien->type = rand() % (2 + 1 - 1) + 1;
 		alien->AI = rand() % (2 + 1);
 		PlaySound(TEXT("alien.wav"), NULL, SND_ASYNC);
 	}
@@ -277,11 +280,9 @@ void generateAlien(struct alien* alien) {
 
 void updateAlienPosition(struct alien* alien, int* alienDir, int width) {
 	static bool alienState = false;
-	switch (alien->presence) {
+	switch (alien->type) {
 	case 1:
 		clear(alienClear, alien->x, alien->y);
-		//alien->x = alien->xOld;
-		//alien->y = alien->yOld;
 		alien->x = alien->x + *alienDir;
 		if (alienState == false) {
 			printObject(alien1a, alien->x, alien->y);
@@ -293,8 +294,6 @@ void updateAlienPosition(struct alien* alien, int* alienDir, int width) {
 		break;
 	case 2:
 		clear(alienClear, alien->x, alien->y);
-		//alien->x = alien->xOld;
-		//alien->y = alien->yOld;
 		alien->x = alien->x + *alienDir;
 		if (alienState == false) {
 			printObject(alien2a, alien->x, alien->y);
@@ -351,7 +350,7 @@ void updateBoulders(int*** boulderMap, int width, int height) {
 		for (int j = 0; j < width; j++) {
 			if ((*boulderMap)[i][j] == 1) {
 				setCoordinates(j, i);
-				putchar(' ');
+				putchar(32);
 			}
 		}
 	}

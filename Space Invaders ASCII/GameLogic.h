@@ -4,7 +4,7 @@
 #define BOULDER_DENSITY 500 //im wieksza wartosc tym mniej
 #define ALIEN_CHANCE 90
 #define ALIEN_DAMAGE 10
-#define ALIEN_LASER_CHANCE 85
+#define ALIEN_LASER_CHANCE 8
 
 void shootLaser(struct dynamicLaserEntity** current, int xShip, int yShip);
 void shootAlienLaser(struct dynamicLaserEntity** alienCurrent, struct alien alien);

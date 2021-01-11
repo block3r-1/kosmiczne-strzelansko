@@ -172,6 +172,8 @@ bool rmElement(struct dynamicLaserEntity** current) {
 
 void gameStats(struct game* gameData) {
 	setCoordinates(10, 2);
+	char score[] = "SCORE: \0";
+	char lives[] = "LIVES: \0";
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 	printf("SCORE: %d LIVES: %d", gameData->score, gameData->lives);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
