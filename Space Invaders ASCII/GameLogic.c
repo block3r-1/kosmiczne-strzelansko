@@ -35,6 +35,7 @@ struct alien {
 struct ship {
 	int x;
 	int y;
+	bool laserShot;
 };
 
 void shootLaser(struct dynamicLaserEntity** current, int xShip, int yShip) {
@@ -199,7 +200,7 @@ void updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 	if (input == 5) {
 		//spacja
-		shootLaser(current, spaceship->x, spaceship->y);
+		spaceship->laserShot = true;
 	}
 }
 

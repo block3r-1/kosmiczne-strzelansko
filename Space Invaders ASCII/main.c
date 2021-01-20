@@ -10,6 +10,7 @@
 
 #define TIME_BOULDER 750 //ms
 #define TIME_LASER 100
+#define TIME_LASER_SHOOT 350
 #define TIME_ALIEN 100
 #define TIME_ALIEN_GENERATION 1000
 #define TIME_ALIEN_LASER 100
@@ -31,6 +32,7 @@ struct alien {
 struct ship {
 	int x;
 	int y;
+	bool laserShot;
 };
 
 int main() {
@@ -41,6 +43,7 @@ int main() {
 	unsigned long int timeElapsed = 0;
 	unsigned long int lastTime = 0;
 	int frameDelayLaser = 0;
+	int frameDelayLaserShoot = 0;
 	int frameDelayBoulders = 0;
 	int frameDelayAlien = 0;
 	int frameDelayAlienGeneration = 0;
@@ -58,6 +61,7 @@ int main() {
 
 	spaceship.x = 0;
 	spaceship.y = 0;
+	spaceship.laserShot = false;
 
 	struct game* gameData = malloc(sizeof(struct game));
 	if (gameData != NULL) {
@@ -122,6 +126,7 @@ int main() {
 	// glowna petla gry
 		gameTick(&timeElapsed, &lastTime);
 		frameDelayLaser += timeElapsed;
+		frameDelayLaserShoot += timeElapsed;
 		frameDelayBoulders += timeElapsed;
 		frameDelayAlien += timeElapsed;
 		frameDelayAlienGeneration += timeElapsed;
@@ -146,6 +151,13 @@ int main() {
 			updateBoulders(&boulderMap, width, height);
 			printBoulders(boulderMap, width, height);
 			frameDelayBoulders = 0;
+		}
+		if (frameDelayLaserShoot > TIME_LASER_SHOOT) {
+			if (spaceship.laserShot == true) {
+				shootLaser(&current, spaceship.x, spaceship.y);
+				spaceship.laserShot = false;
+				frameDelayLaserShoot = 0;
+			}
 		}
 
 		if (current != NULL) {
