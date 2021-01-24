@@ -18,6 +18,7 @@
 struct game {
 	int score;
 	int lives;
+	unsigned long int time;
 };
 
 struct alien {
@@ -65,8 +66,9 @@ int main() {
 
 	struct game* gameData = malloc(sizeof(struct game));
 	if (gameData != NULL) {
-		gameData->lives = 2137;
+		gameData->lives = 20;
 		gameData->score = 0;
+		gameData->time = 0;
 	}
 	else {
 		printf("Nie udalo sie zaalokowac pamieci! \n");
@@ -108,8 +110,8 @@ int main() {
 		exit(-1);
 	}
 
-	printObject(logo, (width - calcObjectWidth(logo)) / 2, height / 2);
-	Sleep(5000);
+	//printObject(logo, (width - calcObjectWidth(logo)) / 2, height / 2);
+//	Sleep(5000);
 	system("cls");
 
 	generateBoulders(&boulderMap, width, height);
@@ -121,6 +123,8 @@ int main() {
 	printObject(ship, spaceship.x, spaceship.y);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 
+	int	check = 0;
+
 	while (quit == false) {
 		fflush(stdout);
 	// glowna petla gry
@@ -131,8 +135,12 @@ int main() {
 		frameDelayAlien += timeElapsed;
 		frameDelayAlienGeneration += timeElapsed;
 		frameDelayAlienLaser += timeElapsed;
+		gameData->time += timeElapsed;
 
-		updateShipPos(&spaceship, &current, boulderMap, gameData);
+		check = updateShipPos(&spaceship, &current, boulderMap, gameData);
+		if (check == -1) {
+			quit = true;
+		}
 		detectCollisions(spaceship, &boulderMap, gameData);
 		if (alien.presence == 0) {
 			if (frameDelayAlienGeneration > TIME_ALIEN_GENERATION) {
@@ -142,8 +150,9 @@ int main() {
 		}
 		gameStats(gameData);
 
-		if (gameData->lives == 0) {
+		if (gameData->lives < 1) {
 			finishGame(width, height);
+			Sleep(4000);
 			quit = true;
 		}
 
@@ -185,5 +194,9 @@ int main() {
 			frameDelayAlien = 0;
 		}
 	}
+	/* PROCEDURA ZAMKNIECIA GRY */
+	freeMemory(&current, &alienCurrent, &boulderMap, height);
+	saveStatsToFile(gameData);
+	free(gameData);
 	return 0;
 }

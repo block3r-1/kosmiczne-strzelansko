@@ -1,13 +1,17 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <windows.h>
 #include <stdio.h>
 #include <conio.h>
 #include <stdbool.h>
+#include <errno.h>
 
 #include "Sprites.h"
 
 struct game {
 	int score;
 	int lives;
+	unsigned long int time;
 };
 
 struct pos {
@@ -129,6 +133,9 @@ int getKeyboardInput() {
 			//spacja
 			return 5;
 			break;
+		case 'q':
+			return 6;
+			break;
 		default:
 			return 0;
 			break;
@@ -185,4 +192,42 @@ void finishGame(int width, int height) {
 	int temp1;
 	int temp2;
 	printObject(death, x, y, &temp1, &temp2);
+}
+
+void freeMemory(struct dynamicLaserEntity** current, struct dynamicLaserEntity** alienCurrent, int*** boulderMap, int height) {
+	if (*current != NULL) {
+		while ((*current)->previous != NULL) { //przejscie na poczatek listy
+			*current = (*current)->previous;
+		}
+		while ((*current)->next != NULL && (*current)->previous != NULL) {
+			*current = (*current)->next;
+			free((*current)->previous);
+			(*current)->previous = NULL;
+		} free(*current);
+	}
+	if (*alienCurrent != NULL) {
+		while ((*alienCurrent)->previous != NULL) { //przejscie na poczatek listy
+			*alienCurrent = (*alienCurrent)->previous;
+		}
+		while ((*alienCurrent)->next != NULL && (*alienCurrent)->previous != NULL) {
+			*alienCurrent = (*alienCurrent)->next;
+			free((*alienCurrent)->previous);
+			(*alienCurrent)->previous = NULL;
+		} free(*alienCurrent);
+	}
+	for (int i = 0; i < height; i++) {
+		free((*boulderMap)[i]);
+	} free(*boulderMap);
+}
+
+void saveStatsToFile(struct game* gameData) {
+	FILE* file = fopen("stats.txt", "w");
+	if (file == NULL) {
+		perror("Stop! Blad otwarcia pliku");
+		return;
+	}
+	fprintf(file, "Lives: %d \n", gameData->lives);
+	fprintf(file, "Score: %d \n", gameData->score);
+	fprintf(file, "Boulders destroyed: %d \n", gameData->score / 25);
+	fprintf(file, "Game time: %d seconds \n", gameData->time / 1000);
 }

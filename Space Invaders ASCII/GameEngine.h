@@ -26,4 +26,6 @@ int getKeyboardInput();
 void gameStats(struct game* gameData);
 void finishGame(int width, int height);
 
+void freeMemory(struct dynamicLaserEntity** current, struct dynamicLaserEntity** alienCurrent, int** boulderMap, int height);
+
 #endif

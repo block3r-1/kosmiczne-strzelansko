@@ -9,7 +9,7 @@
 void shootLaser(struct dynamicLaserEntity** current, int xShip, int yShip);
 void shootAlienLaser(struct dynamicLaserEntity** alienCurrent, struct alien alien);
 
-void updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, struct game* gameData);
+int updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, struct game* gameData);
 void updateLaserPos(struct dynamicLaserEntity** current, int*** boulderMap, struct game* gameData);
 void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height, struct ship spaceship, struct game* gameData);
 

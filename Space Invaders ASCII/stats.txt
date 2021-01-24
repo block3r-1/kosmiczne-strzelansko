@@ -1,0 +1,4 @@
+Lives: 20 
+Score: 75 
+Boulders destroyed: 3 
+Game time: 25 seconds 

@@ -10,6 +10,7 @@
 struct game {
 	int score;
 	int lives;
+	unsigned long int time;
 };
 
 struct pos {
@@ -93,16 +94,10 @@ void updateLaserPos(struct dynamicLaserEntity** current, int*** boulderMap, stru
 			*current = (*current)->previous;
 		}
 		while (1) {
+			bool deleted = false;
 			if (*current == NULL) break;
 			clear(laserClear, (*current)->x, (*current)->y);
-
-			if ((*boulderMap)[(*current)->y][(*current)->x] == 1 || (*boulderMap)[(*current)->y + 1][(*current)->x] == 1) {
-				(*boulderMap)[(*current)->y][(*current)->x] = 0;
-				(*boulderMap)[(*current)->y - 1][(*current)->x] = 0;
-				rmElement(current);
-				gameData->score += 25;
-				break;
-			}
+			(*current)->y = (*current)->y - 1;
 			fflush(stdout);
 
 			if ((*current)->y < 2) {
@@ -112,19 +107,29 @@ void updateLaserPos(struct dynamicLaserEntity** current, int*** boulderMap, stru
 					break;
 				}
 				else {
-					rmElement(current);
-					break;
-					//usun element ze srodka listy
+					deleted = rmElement(current);
+				//usun element ze srodka listy
 				}
 			}
-			(*current)->y = (*current)->y - 1;
-			printObject(laser, (*current)->x, (*current)->y);
-			if ((*current)->next != NULL) {
-				*current = (*current)->next;
-			}
-			else {
-				break;
-			}
+
+				if ((*boulderMap)[(*current)->y][(*current)->x] == 1 || (*boulderMap)[(*current)->y + 1][(*current)->x] == 1) {
+					(*boulderMap)[(*current)->y][(*current)->x] = 0;
+					(*boulderMap)[(*current)->y - 1][(*current)->x] = 0;
+					(*boulderMap)[(*current)->y + 1][(*current)->x] = 0;
+					clear(laserClear, (*current)->x, (*current)->y);
+					deleted = rmElement(current);
+					gameData->score += 25;
+					break;
+				}
+				printObject(laser, (*current)->x, (*current)->y);
+				if ((*current)->next != NULL) {
+					if (deleted == false) {
+						*current = (*current)->next;
+					}
+				}
+				else {
+					break;
+				}
 		}
 	}
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
@@ -154,8 +159,13 @@ void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height, s
 			}
 			printObject(laser, (*alienCurrent)->x, (*alienCurrent)->y);
 			if (((*alienCurrent)->y == spaceship.y && (*alienCurrent)->x == spaceship.x) ||
-				((*alienCurrent)->y == spaceship.y && (*alienCurrent)->x == spaceship.x + 1) ||
-				((*alienCurrent)->y == spaceship.y && (*alienCurrent)->x == spaceship.x + 2)
+				((*alienCurrent)->y == spaceship.y && (*alienCurrent)->x == spaceship.x + 1) || //y lasera = y statku
+				((*alienCurrent)->y == spaceship.y && (*alienCurrent)->x == spaceship.x + 2) ||
+
+				((*alienCurrent)->y == spaceship.y + 1 && (*alienCurrent)->x == spaceship.x) ||
+				((*alienCurrent)->y == spaceship.y + 1 && (*alienCurrent)->x == spaceship.x + 1) || //y lasera = y + 1 statku
+				((*alienCurrent)->y == spaceship.y + 1 && (*alienCurrent)->x == spaceship.x + 2)
+
 				)
 			{
 				rmElement(alienCurrent);
@@ -172,7 +182,7 @@ void updateAlienLaserPos(struct dynamicLaserEntity** alienCurrent, int height, s
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 }
 
-void updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, struct game* gameData) {
+int updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, struct game* gameData) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
 	int input = getKeyboardInput();
 	if (input == 1) {
@@ -197,6 +207,10 @@ void updateShipPos(struct ship* spaceship, struct dynamicLaserEntity** current, 
 		yShip = *yShipOld;
 		printObject(ship, xShip, yShip + 1, xShipOld, yShipOld);
 	}*/
+	if (input == 6) {
+		//wyjscie z gry
+		return -1;
+	}
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 	if (input == 5) {
 		//spacja
