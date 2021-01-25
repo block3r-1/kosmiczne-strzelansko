@@ -47,7 +47,11 @@ void shootLaser(struct dynamicLaserEntity** current, int xShip, int yShip) {
 			(*current)->y = yShip - 1;
 			(*current)->next = NULL;
 			(*current)->previous = NULL;
-			PlaySound(TEXT("laser.wav"), NULL, SND_ASYNC);
+			//PlaySound(TEXT("laser.wav"), NULL, SND_ASYNC);
+		}
+		else {
+			printf("Stop! Problem z zaalokowaniem pamieci!\n");
+			return;
 		}
 	}
 	else {
@@ -59,7 +63,11 @@ void shootLaser(struct dynamicLaserEntity** current, int xShip, int yShip) {
 			new->previous = *current;
 			new->next = NULL;
 			*current = new;
-			PlaySound(TEXT("laser.wav"), NULL, SND_ASYNC);
+			//PlaySound(TEXT("laser.wav"), NULL, SND_ASYNC);
+		}
+		else {
+			printf("Stop! Problem z zaalokowaniem pamieci!\n");
+			return;
 		}
 	}
 }
@@ -73,6 +81,10 @@ void shootAlienLaser(struct dynamicLaserEntity** alienCurrent, struct alien alie
 			(*alienCurrent)->next = NULL;
 			(*alienCurrent)->previous = NULL;
 		}
+		else {
+			printf("Stop! Problem z zaalokowaniem pamieci!\n");
+			return;
+		}
 	}
 	else {
 		struct dynamicLaserEntity* new = malloc(sizeof(struct dynamicLaserEntity));
@@ -83,6 +95,10 @@ void shootAlienLaser(struct dynamicLaserEntity** alienCurrent, struct alien alie
 			new->previous = *alienCurrent;
 			new->next = NULL;
 			*alienCurrent = new;
+		}
+		else {
+			printf("Stop! Problem z zaalokowaniem pamieci!\n");
+			return;
 		}
 	}
 }
